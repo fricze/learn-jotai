@@ -1,11 +1,11 @@
 import {
-    Provider,
     atom,
     useAtom,
     PrimitiveAtom,
     Atom
 } from "jotai";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { registerAtom } from "models/user";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -54,42 +54,47 @@ const Error = ({ sourceAtom, errorInfo }: ErrorProps) => {
 };
 
 const SubmitButton = () => {
+    const register = useUpdateAtom(registerAtom);
+    const name = useAtomValue(nameAtom);
+    const password = useAtomValue(passwordAtom);
+
     const isValid = useAtomValue(isFormValid);
 
     return (
         <Box>
-            <Button disabled={!isValid} variant="outlined">
+            <Button disabled={!isValid} variant="outlined"
+                onClick={() => register({ email: "", password })}>
                 Register
             </Button>
         </Box>
     );
 };
 
-const Form = () => (
-    <Box
-        component="form"
-        sx={{
-            "& > :not(style)": { m: 2, width: "25ch" }
-        }}
-    >
-        <Typography variant="h3" gutterBottom>
-            Registration form
-        </Typography>
+const Form = () => {
+    return (
+        <Box
+            component="form"
+            sx={{
+                "& > :not(style)": { m: 2, width: "25ch" }
+            }}
+        >
+            <Typography variant="h3" gutterBottom>
+                Registration form
+            </Typography>
 
-        <Input label="Name" sourceAtom={nameAtom} />
-        <Input type="password" label="Password" sourceAtom={passwordAtom} />
+            <Input label="Name" sourceAtom={nameAtom} />
+            <Input type="password" label="Password" sourceAtom={passwordAtom} />
 
-        <Error sourceAtom={isNameValid} errorInfo="Name is too short" />
-        <Error sourceAtom={isPasswordValid} errorInfo="Password is too short" />
+            <Error sourceAtom={isNameValid} errorInfo="Name is too short" />
+            <Error sourceAtom={isPasswordValid} errorInfo="Password is too short" />
 
-        <SubmitButton />
-    </Box>
-);
+            <SubmitButton />
+        </Box>
+    )
+};
 
 const App = () => (
-    <Provider>
-        <Form />
-    </Provider>
+    <Form />
 );
 
 export default App;
