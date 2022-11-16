@@ -20,8 +20,9 @@ export const registerAtom = atom(
     (_, set, { email, password }) => {
         register(email, password)
             .then(({ uid, email }) => {
-                email = email as string;
-                set(userAtom, { uid, email })
+                if (email) {
+                    set(userAtom, { uid, email })
+                }
             })
             .catch(({ code, message }) => {
                 switch (code) {
