@@ -13,7 +13,7 @@ import Button from "@mui/material/Button";
 
 import "@fontsource/roboto/400.css";
 import { useDispatch, useSelector } from "react-redux";
-import { setNameAction, setPasswordAction } from "reducer";
+import { setName, setNameAction, setPassword, setPasswordAction } from "reducer";
 import { RootState } from "store";
 import { Suspense } from "react";
 
@@ -34,8 +34,27 @@ interface InputProps {
     sourceAtom: PrimitiveAtom<string>;
 }
 
+interface MultiInputProps {
+    label: string;
+    type?: string;
+    text: string;
+    setText: (v: string) => void;
+}
+
 const Input = ({ type = "text", label, sourceAtom }: InputProps) => {
     const [text, setText] = useAtom(sourceAtom);
+    return (
+        <TextField
+            type={type}
+            label={label}
+            variant="filled"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+        />
+    );
+};
+
+const MultiInput = ({ type = "text", label, text, setText }: MultiInputProps) => {
     return (
         <TextField
             type={type}
@@ -74,7 +93,7 @@ const SubmitButton = () => {
     );
 };
 
-const failedAtom = atom<number | Promise<number>>(Promise.reject("fuck").catch(() => 45));
+const failedAtom = atom<number | Promise<number>>(Promise.reject("error").catch(() => 45));
 
 const Datum = () => {
     const failed = useAtomValue(failedAtom);
@@ -118,8 +137,11 @@ const FormRedux = () => {
     const dispatch = useDispatch()
     const number = useSelector(a => a)
 
-    const setPassword = () => dispatch(setPasswordAction(''))
-    const setName = () => dispatch(setNameAction(''))
+    const onChangePassword = () => dispatch(setPassword(''))
+    const onChangeName = () => dispatch(setName(''))
+
+    const nameSource = useAtom(nameAtom)
+    const passwordSource = useAtom(passwordAtom)
 
     return (
         <Box
@@ -132,8 +154,8 @@ const FormRedux = () => {
                 Registration form
             </Typography>
 
-            <Input label="Name" sourceAtom={nameAtom} />
-            <Input type="password" label="Password" sourceAtom={passwordAtom} />
+            <MultiInput label="Name" text={nameSource[0]} setText={nameSource[1]} />
+            <MultiInput type="password" label="Password" text={passwordSource[0]} setText={passwordSource[1]} />
 
             <Error sourceAtom={isNameValid} errorInfo="Name is too short" />
             <Error sourceAtom={isPasswordValid} errorInfo="Password is too short" />
@@ -144,7 +166,7 @@ const FormRedux = () => {
 };
 
 const App = () => (
-    <Form />
+    <FormRedux />
 );
 
 export default App;

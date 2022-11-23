@@ -44,7 +44,7 @@ export const userReducer = function(state = userState, action: AnyAction) {
     }
 };
 
-const userSlice = createSlice({
+export const userSlice = createSlice({
     name: 'user',
     initialState: userState,
     reducers: {
@@ -56,3 +56,5 @@ const userSlice = createSlice({
         }
     }
 })
+
+export const { setName, setPassword } = userSlice.actions;

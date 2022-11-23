@@ -7425,6 +7425,11 @@ jest@26.6.0:
     import-local "^3.0.2"
     jest-cli "^26.6.0"
 
+jotai-optics@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/jotai-optics/-/jotai-optics-0.2.0.tgz#d09870f8f6d4f70072775a252aa36c83ef9feb1a"
+  integrity sha512-/vYSIPc9Sfl2pIlk1wQRFwZw+JnxHnB0WNREE4AYgv1D1RwCUbmEF37SQQrqfojA2fUkgcqK4oFVhkEF7FFBSA==
+
 jotai@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.0.0.tgz#d5e7f7044d89e543a9c7429a9723e11528b2760e"
@@ -8494,6 +8499,11 @@ opn@^5.5.0:
   integrity sha512-PqHpggC9bLV0VeWcdKhkpxY+3JTzetLSqTCWL/z/tFIbI6G8JCjondXklT1JinczLz2Xib62sSp0T/gKT4KksA==
   dependencies:
     is-wsl "^1.1.0"
+
+optics-ts@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/optics-ts/-/optics-ts-2.4.0.tgz#b23d177a76de66fdec9a832eefbd43458a91953e"
+  integrity sha512-BIYgnqOTEf+WiXuxuBFXeoCtyIDOwnUwCMybdQh8qdHyWXunwVVt7iD9XwNq8SCd5vUo9vqgYxF5ati/6inIuQ==
 
 optimize-css-assets-webpack-plugin@5.0.4:
   version "5.0.4"
