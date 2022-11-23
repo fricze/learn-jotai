@@ -12,6 +12,10 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import "@fontsource/roboto/400.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setNameAction, setPasswordAction } from "reducer";
+import { RootState } from "store";
+import { Suspense } from "react";
 
 const nameAtom = atom("John");
 const passwordAtom = atom("");
@@ -70,7 +74,53 @@ const SubmitButton = () => {
     );
 };
 
+const failedAtom = atom<number | Promise<number>>(Promise.reject("fuck").catch(() => 45));
+
+const Datum = () => {
+    const failed = useAtomValue(failedAtom);
+    console.log(failed)
+
+    return <div>Hello</div>
+}
+
+const Loading = () => <div>loading...</div>;
+
 const Form = () => {
+    const dispatch = useDispatch()
+
+    return (
+        <Box
+            component="form"
+            sx={{
+                "& > :not(style)": { m: 2, width: "25ch" }
+            }}
+        >
+            <Suspense fallback={<Loading />}>
+                <Datum />
+            </Suspense>
+
+            <Typography variant="h3" gutterBottom>
+                Registration form
+            </Typography>
+
+            <Input label="Name" sourceAtom={nameAtom} />
+            <Input type="password" label="Password" sourceAtom={passwordAtom} />
+
+            <Error sourceAtom={isNameValid} errorInfo="Name is too short" />
+            <Error sourceAtom={isPasswordValid} errorInfo="Password is too short" />
+
+            <SubmitButton />
+        </Box>
+    )
+};
+
+const FormRedux = () => {
+    const dispatch = useDispatch()
+    const number = useSelector(a => a)
+
+    const setPassword = () => dispatch(setPasswordAction(''))
+    const setName = () => dispatch(setNameAction(''))
+
     return (
         <Box
             component="form"
