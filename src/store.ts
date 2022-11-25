@@ -1,5 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import {
+    useSelector as useReduxSelector,
+    TypedUseSelectorHook,
+} from 'react-redux'
+import {
     countReducer,
     userReducer,
     userSlice,
@@ -14,4 +18,6 @@ export const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+
+export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 

@@ -12,10 +12,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import "@fontsource/roboto/400.css";
-import { useDispatch, useSelector } from "react-redux";
-import { setName, setNameAction, setPassword, setPasswordAction } from "reducer";
-import { RootState } from "store";
+import { useDispatch } from "react-redux";
+import { setName, setPassword } from "reducer";
+import { useSelector } from "store";
 import { Suspense } from "react";
+import { isNameValid, isPasswordValid } from "selectors/user";
 
 const emailAtom = atom("John");
 const passwordAtom = atom("");
@@ -25,8 +26,12 @@ const derived = function <T, R>(source: Atom<T>, fn: (v: T) => R): Atom<R> { ret
 const emailLengthAtom = atom((get) => get(emailAtom).length);
 const passwordLengthAtom = derived(passwordAtom, p => p.length);
 
-const isNameValidAtom = atom((get) => get(emailLengthAtom) >= 3);
-const isPasswordValidAtom = atom((get) => get(passwordLengthAtom) >= 3);
+/* const isNameValidAtom = atom((get) => get(emailLengthAtom) >= 3);
+* const isPasswordValidAtom = atom((get) => get(passwordLengthAtom) >= 3);
+*  */
+
+const isNameValidAtom = atom((get) => get(emailAtom).length >= 3);
+const isPasswordValidAtom = atom((get) => get(passwordAtom).length >= 3);
 
 const isFormValid = atom((get) => get(isNameValidAtom) && get(isPasswordValidAtom));
 
@@ -140,14 +145,11 @@ const FormRedux = () => {
     const onChangePassword = (password: string) => dispatch(setPassword(password))
     const onChangeName = (name: string) => dispatch(setName(name))
 
-    const password = useSelector((state: RootState) => state.user.form.password)
-    const name = useSelector((state: RootState) => state.user.form.name)
+    const password = useSelector(state => state.user.form.password)
+    const name = useSelector(state => state.user.form.name)
 
-    const emailLength = name.length;
-    const passwordLength = password.length;
-
-    const isNameValid = emailLength >= 3;
-    const isPasswordValid = passwordLength >= 3;
+    const nameValid = isNameValid(name);
+    const passwordValid = isPasswordValid(password);
 
     return (
         <Box
@@ -168,8 +170,8 @@ const FormRedux = () => {
                         text={password}
                         setText={text => onChangePassword(text)} />
 
-            {!isNameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
-            {!isPasswordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
+            {!nameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
+            {!passwordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
 
             <SubmitButton />
         </Box>
