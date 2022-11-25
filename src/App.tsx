@@ -17,16 +17,18 @@ import { setName, setNameAction, setPassword, setPasswordAction } from "reducer"
 import { RootState } from "store";
 import { Suspense } from "react";
 
-const nameAtom = atom("John");
+const emailAtom = atom("John");
 const passwordAtom = atom("");
 
-const nameLengthAtom = atom((get) => get(nameAtom).length);
-const passwordLengthAtom = atom((get) => get(passwordAtom).length);
+const derived = function <T, R>(source: Atom<T>, fn: (v: T) => R): Atom<R> { return atom((get) => fn(get(source))) };
 
-const isNameValid = atom((get) => get(nameLengthAtom) >= 3);
-const isPasswordValid = atom((get) => get(passwordLengthAtom) >= 3);
+const emailLengthAtom = atom((get) => get(emailAtom).length);
+const passwordLengthAtom = derived(passwordAtom, p => p.length);
 
-const isFormValid = atom((get) => get(isNameValid) && get(isPasswordValid));
+const isNameValidAtom = atom((get) => get(emailLengthAtom) >= 3);
+const isPasswordValidAtom = atom((get) => get(passwordLengthAtom) >= 3);
+
+const isFormValid = atom((get) => get(isNameValidAtom) && get(isPasswordValidAtom));
 
 interface InputProps {
     label: string;
@@ -66,19 +68,17 @@ const MultiInput = ({ type = "text", label, text, setText }: MultiInputProps) =>
     );
 };
 
-interface ErrorProps {
-    sourceAtom: Atom<boolean>;
+interface ErrorValueProps {
     errorInfo: string;
 }
 
-const Error = ({ sourceAtom, errorInfo }: ErrorProps) => {
-    const isValid = useAtomValue(sourceAtom);
-    return isValid ? null : <div style={{ color: "red" }}>{errorInfo}</div>;
+const ErrorValue = ({ errorInfo }: ErrorValueProps) => {
+    return <div style={{ color: "red" }}>{errorInfo}</div>;
 };
 
 const SubmitButton = () => {
     const register = useUpdateAtom(registerAtom);
-    const name = useAtomValue(nameAtom);
+    const name = useAtomValue(emailAtom)
     const password = useAtomValue(passwordAtom);
 
     const isValid = useAtomValue(isFormValid);
@@ -105,7 +105,8 @@ const Datum = () => {
 const Loading = () => <div>loading...</div>;
 
 const Form = () => {
-    const dispatch = useDispatch()
+    const isNameValid = useAtomValue(isNameValidAtom);
+    const isPasswordValid = useAtomValue(isPasswordValidAtom);
 
     return (
         <Box
@@ -122,11 +123,11 @@ const Form = () => {
                 Registration form
             </Typography>
 
-            <Input label="Name" sourceAtom={nameAtom} />
+            <Input label="Name" sourceAtom={emailAtom} />
             <Input type="password" label="Password" sourceAtom={passwordAtom} />
 
-            <Error sourceAtom={isNameValid} errorInfo="Name is too short" />
-            <Error sourceAtom={isPasswordValid} errorInfo="Password is too short" />
+            {!isNameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
+            {!isPasswordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
 
             <SubmitButton />
         </Box>
@@ -135,13 +136,18 @@ const Form = () => {
 
 const FormRedux = () => {
     const dispatch = useDispatch()
-    const number = useSelector(a => a)
 
-    const onChangePassword = () => dispatch(setPassword(''))
-    const onChangeName = () => dispatch(setName(''))
+    const onChangePassword = (password: string) => dispatch(setPassword(password))
+    const onChangeName = (name: string) => dispatch(setName(name))
 
-    const nameSource = useAtom(nameAtom)
-    const passwordSource = useAtom(passwordAtom)
+    const password = useSelector((state: RootState) => state.user.form.password)
+    const name = useSelector((state: RootState) => state.user.form.name)
+
+    const emailLength = name.length;
+    const passwordLength = password.length;
+
+    const isNameValid = emailLength >= 3;
+    const isPasswordValid = passwordLength >= 3;
 
     return (
         <Box
@@ -154,11 +160,16 @@ const FormRedux = () => {
                 Registration form
             </Typography>
 
-            <MultiInput label="Name" text={nameSource[0]} setText={nameSource[1]} />
-            <MultiInput type="password" label="Password" text={passwordSource[0]} setText={passwordSource[1]} />
+            <MultiInput label="Name"
+                        text={name}
+                        setText={text => onChangeName(text)} />
+            <MultiInput type="password"
+                        label="Password"
+                        text={password}
+                        setText={text => onChangePassword(text)} />
 
-            <Error sourceAtom={isNameValid} errorInfo="Name is too short" />
-            <Error sourceAtom={isPasswordValid} errorInfo="Password is too short" />
+            {!isNameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
+            {!isPasswordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
 
             <SubmitButton />
         </Box>
@@ -168,5 +179,10 @@ const FormRedux = () => {
 const App = () => (
     <FormRedux />
 );
+
+/* const App = () => (
+*     <Form />
+* );
+*  */
 
 export default App;
