@@ -4,7 +4,7 @@ import {
     PrimitiveAtom,
     Atom
 } from "jotai";
-import { useAtomDevtools, useAtomsDebugValue, useAtomsDevtools, useAtomsSnapshot } from 'jotai/devtools'
+import { useAtomsDebugValue, useAtomsDevtools } from 'jotai/devtools'
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { registerAtom } from "models/user";
 import Box from "@mui/material/Box";
@@ -14,10 +14,10 @@ import Button from "@mui/material/Button";
 
 import "@fontsource/roboto/400.css";
 import { useDispatch } from "react-redux";
-import { setName, setPassword } from "reducer";
+import { setEmail, setPassword } from "reducer";
 import { useSelector } from "store";
 import { Suspense, useEffect } from "react";
-import { isNameValid, isPasswordValid } from "selectors/user";
+import { isEmailValid, isPasswordValid } from "selectors/user";
 
 const emailAtom = atom("John");
 const passwordAtom = atom("");
@@ -27,14 +27,14 @@ const derived = function <T, R>(source: Atom<T>, fn: (v: T) => R): Atom<R> { ret
 const emailLengthAtom = atom((get) => get(emailAtom).length);
 const passwordLengthAtom = derived(passwordAtom, p => p.length);
 
-/* const isNameValidAtom = atom((get) => get(emailLengthAtom) >= 3);
+/* const isEmailValidAtom = atom((get) => get(emailLengthAtom) >= 3);
 * const isPasswordValidAtom = atom((get) => get(passwordLengthAtom) >= 3);
 *  */
 
-const isNameValidAtom = atom((get) => get(emailAtom).length >= 3);
+const isEmailValidAtom = atom((get) => get(emailAtom).length >= 3);
 const isPasswordValidAtom = atom((get) => get(passwordAtom).length >= 3);
 
-const isFormValid = atom((get) => get(isNameValidAtom) && get(isPasswordValidAtom));
+const isFormValid = atom((get) => get(isEmailValidAtom) && get(isPasswordValidAtom));
 
 interface InputProps {
     label: string;
@@ -84,7 +84,7 @@ const ErrorValue = ({ errorInfo }: ErrorValueProps) => {
 
 const SubmitButton = () => {
     const register = useUpdateAtom(registerAtom);
-    const name = useAtomValue(emailAtom)
+    const email = useAtomValue(emailAtom)
     const password = useAtomValue(passwordAtom);
 
     const isValid = useAtomValue(isFormValid);
@@ -111,7 +111,7 @@ const Datum = () => {
 const Loading = () => <div>loading...</div>;
 
 const Form = () => {
-    const isNameValid = useAtomValue(isNameValidAtom);
+    const isEmailValid = useAtomValue(isEmailValidAtom);
     const isPasswordValid = useAtomValue(isPasswordValidAtom);
 
     return (
@@ -129,10 +129,10 @@ const Form = () => {
                 Registration form
             </Typography>
 
-            <Input label="Name" sourceAtom={emailAtom} />
+            <Input label="Email" sourceAtom={emailAtom} />
             <Input type="password" label="Password" sourceAtom={passwordAtom} />
 
-            {!isNameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
+            {!isEmailValid ? <ErrorValue errorInfo="Email is too short" /> : null}
             {!isPasswordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
 
             <SubmitButton />
@@ -144,25 +144,25 @@ const Inputs = () => {
     const dispatch = useDispatch()
 
     const onChangePassword = (password: string) => dispatch(setPassword(password))
-    const onChangeName = (name: string) => dispatch(setName(name))
+    const onChangeEmail = (email: string) => dispatch(setEmail(email))
 
     const password = useSelector(state => state.user.form.password)
-    const name = useSelector(state => state.user.form.name)
+    const email = useSelector(state => state.user.form.email)
 
-    const nameValid = isNameValid(name);
+    const emailValid = isEmailValid(email);
     const passwordValid = isPasswordValid(password);
 
     return (
         <>
-            <MultiInput label="Name"
-                text={name}
-                setText={text => onChangeName(text)} />
+            <MultiInput label="Email"
+                text={email}
+                setText={text => onChangeEmail(text)} />
             <MultiInput type="password"
                 label="Password"
                 text={password}
                 setText={text => onChangePassword(text)} />
 
-            {!nameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
+            {!emailValid ? <ErrorValue errorInfo="Email is too short" /> : null}
             {!passwordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
         </>
     )
