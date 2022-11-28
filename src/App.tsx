@@ -139,7 +139,7 @@ const Form = () => {
     )
 };
 
-const FormRedux = () => {
+const Inputs = () => {
     const dispatch = useDispatch()
 
     const onChangePassword = (password: string) => dispatch(setPassword(password))
@@ -152,16 +152,7 @@ const FormRedux = () => {
     const passwordValid = isPasswordValid(password);
 
     return (
-        <Box
-            component="form"
-            sx={{
-                "& > :not(style)": { m: 2, width: "25ch" }
-            }}
-        >
-            <Typography variant="h3" gutterBottom>
-                Registration form
-            </Typography>
-
+        <>
             <MultiInput label="Name"
                         text={name}
                         setText={text => onChangeName(text)} />
@@ -172,6 +163,23 @@ const FormRedux = () => {
 
             {!nameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
             {!passwordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
+        </>
+    )
+};
+
+const FormRedux = () => {
+    return (
+        <Box
+            component="form"
+            sx={{
+                "& > :not(style)": { m: 2, width: "25ch" }
+            }}
+        >
+            <Typography variant="h3" gutterBottom>
+                Registration form
+            </Typography>
+
+            <Inputs />
 
             <SubmitButton />
         </Box>
