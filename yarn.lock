@@ -7430,10 +7430,10 @@ jotai-optics@^0.2.0:
   resolved "https://registry.yarnpkg.com/jotai-optics/-/jotai-optics-0.2.0.tgz#d09870f8f6d4f70072775a252aa36c83ef9feb1a"
   integrity sha512-/vYSIPc9Sfl2pIlk1wQRFwZw+JnxHnB0WNREE4AYgv1D1RwCUbmEF37SQQrqfojA2fUkgcqK4oFVhkEF7FFBSA==
 
-jotai@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.0.0.tgz#d5e7f7044d89e543a9c7429a9723e11528b2760e"
-  integrity sha512-6hZGy3hqIlBlLSKppTrxDc1Vb7mi3I8eEQOIu7Kj6ceX1PSzjxdsEVC9TjAqaio8gZJEz+2ufNUf4afvbs0RXg==
+jotai@^1.5.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.10.0.tgz#50c5224789282eca1cdc907a51e316d8d94c5976"
+  integrity sha512-3Q8kQU3Ktds+80Ku4dVcvnwSXEcK0Fg0b6mC1+4wz3rmF64lOGNUySKXQ4njvYCWodR8bw2HygOKYSYkHxQQmA==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

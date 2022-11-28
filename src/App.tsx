@@ -4,6 +4,7 @@ import {
     PrimitiveAtom,
     Atom
 } from "jotai";
+import { useAtomDevtools, useAtomsDebugValue, useAtomsDevtools, useAtomsSnapshot } from 'jotai/devtools'
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { registerAtom } from "models/user";
 import Box from "@mui/material/Box";
@@ -15,10 +16,11 @@ import "@fontsource/roboto/400.css";
 import { useDispatch } from "react-redux";
 import { setName, setPassword } from "reducer";
 import { useSelector } from "store";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { isNameValid, isPasswordValid } from "selectors/user";
 
 const emailAtom = atom("John");
+emailAtom.debugLabel = "emailAtom"
 const passwordAtom = atom("");
 
 const derived = function <T, R>(source: Atom<T>, fn: (v: T) => R): Atom<R> { return atom((get) => fn(get(source))) };
@@ -154,12 +156,12 @@ const Inputs = () => {
     return (
         <>
             <MultiInput label="Name"
-                        text={name}
-                        setText={text => onChangeName(text)} />
+                text={name}
+                setText={text => onChangeName(text)} />
             <MultiInput type="password"
-                        label="Password"
-                        text={password}
-                        setText={text => onChangePassword(text)} />
+                label="Password"
+                text={password}
+                setText={text => onChangePassword(text)} />
 
             {!nameValid ? <ErrorValue errorInfo="Name is too short" /> : null}
             {!passwordValid ? <ErrorValue errorInfo="Password is too short" /> : null}
@@ -186,13 +188,30 @@ const FormRedux = () => {
     )
 };
 
-const App = () => (
-    <FormRedux />
-);
-
 /* const App = () => (
-*     <Form />
-* );
-*  */
+ *     <FormRedux />
+ * );
+ *  */
+const DebugAtoms = () => {
+    useAtomsDebugValue()
+
+    return null
+}
+
+const AtomsDevtools = ({ children }: { children: JSX.Element }) => {
+    useAtomsDevtools('demo')
+    return children
+}
+const App = () => {
+    return (
+        <div>
+            <DebugAtoms />
+            <AtomsDevtools>
+                <Form />
+            </AtomsDevtools>
+        </div>
+    )
+};
+
 
 export default App;
