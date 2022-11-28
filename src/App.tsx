@@ -2,7 +2,6 @@ import {
     atom,
     useAtom,
     PrimitiveAtom,
-    Atom
 } from "jotai";
 import { useAtomsDebugValue, useAtomsDevtools } from 'jotai/devtools'
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
@@ -16,20 +15,11 @@ import "@fontsource/roboto/400.css";
 import { useDispatch } from "react-redux";
 import { setEmail, setPassword } from "reducer";
 import { useSelector } from "store";
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import { isEmailValid, isPasswordValid } from "selectors/user";
 
-const emailAtom = atom("John");
+const emailAtom = atom("john@email.com");
 const passwordAtom = atom("");
-
-const derived = function <T, R>(source: Atom<T>, fn: (v: T) => R): Atom<R> { return atom((get) => fn(get(source))) };
-
-const emailLengthAtom = atom((get) => get(emailAtom).length);
-const passwordLengthAtom = derived(passwordAtom, p => p.length);
-
-/* const isEmailValidAtom = atom((get) => get(emailLengthAtom) >= 3);
-* const isPasswordValidAtom = atom((get) => get(passwordLengthAtom) >= 3);
-*  */
 
 const isEmailValidAtom = atom((get) => get(emailAtom).length >= 3);
 const isPasswordValidAtom = atom((get) => get(passwordAtom).length >= 3);
