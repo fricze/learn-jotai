@@ -20,7 +20,6 @@ import { Suspense, useEffect } from "react";
 import { isNameValid, isPasswordValid } from "selectors/user";
 
 const emailAtom = atom("John");
-emailAtom.debugLabel = "emailAtom"
 const passwordAtom = atom("");
 
 const derived = function <T, R>(source: Atom<T>, fn: (v: T) => R): Atom<R> { return atom((get) => fn(get(source))) };
